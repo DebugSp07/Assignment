@@ -1,0 +1,123 @@
+class Rectangle {
+    private double length;
+    private double width;
+
+    public void setRectangle(double length, double width) {
+        this.length = length;
+        this.width = width;
+    }
+
+    public double getArea() {
+        return length * width;
+    }
+}
+
+class Box extends Rectangle {
+    private double height;
+
+    public void setBox(double length, double width, double height) {
+        setRectangle(length, width);
+        this.height = height;
+    }
+
+    public double getVolume() {
+        return getArea() * height;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Box box = new Box();
+        box.setBox(4.0, 5.0, 6.0);
+        
+        double volume = box.getVolume();
+        System.out.println("Box Volume: " + volume);
+    }
+}
+
+
+
+
+2.Write a Java program to sort the product details by their price and by their type 
+a.	Create one Product pojo class ( prodct_id , product_name , product_type,product_catagory[digital , electronics , automatic , semiautomatic etc] )
+b.	Design a proper collection to perform the insert and delete operation 
+c.	 Product id must be unique 
+d.	User can enter the product details at run time(user scanner class) 
+e.	Sort the product data on the bases of two details category and price use (comparable or comparator interface)
+
+
+
+
+
+import java.util.*;
+
+class Product implements Comparable<Product> {
+    private int productId;
+    private String productName;
+    private String productType;
+    private String productCategory;
+    private double productPrice;
+
+    public Product(int productId, String productName, String productType, String productCategory, double productPrice) {
+        this.productId = productId;
+        this.productName = productName;
+        this.productType = productType;
+        this.productCategory = productCategory;
+        this.productPrice = productPrice;
+    }
+
+    @Override
+    public int compareTo(Product other) {
+        return Double.compare(this.productPrice, other.productPrice);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ID: %d, Name: %s, Type: %s, Category: %s, Price: %.2f",
+                productId, productName, productType, productCategory, productPrice);
+    }
+}
+
+public class ProductSortDemo {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Set<Product> productsByCategory = new TreeSet<>(Comparator.comparing(Product::getProductCategory));
+        Set<Product> productsByPrice = new TreeSet<>();
+
+        while (true) {
+            System.out.println("Enter the product details:");
+            System.out.print("Enter product id: ");
+            int productId = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            System.out.print("Enter product name: ");
+            String productName = scanner.nextLine();
+
+            System.out.print("Enter product type: ");
+            String productType = scanner.nextLine();
+
+            System.out.print("Enter product category: ");
+            String productCategory = scanner.nextLine();
+
+            System.out.print("Enter product price: ");
+            double productPrice = scanner.nextDouble();
+            scanner.nextLine(); // Consume newline
+
+            Product product = new Product(productId, productName, productType, productCategory, productPrice);
+            productsByCategory.add(product);
+            productsByPrice.add(product);
+
+            System.out.print("Do you want to enter more products? (yes/no): ");
+            String continueInput = scanner.nextLine();
+            if (!continueInput.equalsIgnoreCase("yes")) {
+                break;
+            }
+        }
+
+        System.out.println("\nSorted Products by Category:");
+        productsByCategory.forEach(System.out::println);
+
+        System.out.println("\nSorted Products by Price:");
+        productsByPrice.forEach(System.out::println);
+    }
+}
